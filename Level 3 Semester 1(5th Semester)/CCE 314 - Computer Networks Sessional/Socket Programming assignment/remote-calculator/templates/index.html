@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remote Calculator | Socket Project</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        :root {
+            --p1: #667eea;
+            --p2: #764ba2;
+        }
+
+        /* Theme presets */
+        .theme-blue   { --p1: #667eea; --p2: #764ba2; }
+        .theme-green  { --p1: #00b894; --p2: #00d26a; }
+        .theme-orange { --p1: #ff7e5f; --p2: #feb47b; }
+        .theme-pink   { --p1: #ff758c; --p2: #ff7eb3; }
+        .theme-purple { --p1: #8e2de2; --p2: #4a00e0; }
+
+        * {
+            margin: 0; padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, var(--p1), var(--p2));
+            min-height: 100vh;
+            display: flex; justify-content: center; align-items: center;
+            padding: 30px;
+            transition: 0.5s;
+        }
+
+        .calculator-card {
+            background: rgba(255,255,255,0.08);
+            backdrop-filter: blur(25px);
+            width: 100%;
+            max-width: 480px;
+            padding: 35px;
+            border-radius: 25px;
+            border: 1px solid rgba(255,255,255,0.2);
+            box-shadow: 0 15px 50px rgba(0,0,0,0.3);
+            animation: fadeIn 0.6s ease;
+        }
+
+        .header h1 {
+            text-align: center;
+            font-size: 2rem;
+            color: #fff;
+            margin-bottom: 8px;
+            text-shadow: 0 5px 20px rgba(0,0,0,0.4);
+        }
+
+        .header p {
+            text-align: center;
+            color: rgba(255,255,255,0.7);
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            color: rgba(255,255,255,0.7);
+            font-size: .9rem;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 15px;
+            background: rgba(255,255,255,0.12);
+            border: 2px solid transparent;
+            border-radius: 12px;
+            color: #fff;
+            font-size: 1.2rem;
+            outline: none;
+            margin-bottom: 15px;
+            transition: 0.3s;
+        }
+
+        .input-field:focus {
+            border-color: var(--p1);
+            box-shadow: 0 0 15px var(--p1);
+        }
+
+        .operator-group {
+            display: flex;
+            justify-content: space-between;
+            margin: 15px 0;
+        }
+
+        .operator-btn {
+            width: 18%;
+            padding: 15px;
+            text-align: center;
+            border-radius: 12px;
+            background: rgba(255,255,255,0.12);
+            color: #fff;
+            cursor: pointer;
+            font-size: 1.3rem;
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .operator-btn:hover {
+            background: rgba(255,255,255,0.18);
+        }
+
+        .operator-btn.active {
+            background: linear-gradient(135deg, var(--p1), var(--p2));
+            box-shadow: 0 5px 20px var(--p1);
+        }
+
+        .calculate-btn {
+            width: 100%;
+            padding: 18px;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--p1), var(--p2));
+            color: #fff;
+            border: none;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .calculate-btn:hover {
+            transform: scale(1.03);
+            box-shadow: 0 10px 25px var(--p1);
+        }
+
+        .result-display {
+            background: rgba(255,255,255,0.15);
+            border-radius: 12px;
+            padding: 20px;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .result-value {
+            font-size: 2.2rem;
+            color: #fff;
+            font-weight: bold;
+        }
+
+        /* Floating Theme Button */
+        .theme-switcher {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            background: #fff;
+            color: #000;
+            width: 55px; height: 55px;
+            border-radius: 50%;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            display: flex; justify-content: center; align-items: center;
+            cursor: pointer;
+            font-size: 1.4rem;
+        }
+
+        .theme-panel {
+            position: fixed;
+            bottom: 90px;
+            right: 25px;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(10px);
+            padding: 15px;
+            border-radius: 15px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .theme-color {
+            width: 35px; height: 35px;
+            border-radius: 50%;
+            margin: 8px;
+            cursor: pointer;
+            display: inline-block;
+            border: 2px solid #fff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity:0; transform:translateY(10px) }
+            to   { opacity:1; transform:translateY(0) }
+        }
+    </style>
+</head>
+
+<body class="theme-blue">
+
+    <div class="calculator-card">
+
+        <div class="header">
+            <h1><i class="fas fa-calculator"></i> Remote Calculator</h1>
+            <p>TCP/IP Socket Programming</p>
+        </div>
+
+        <label class="input-label">First Number</label>
+        <input type="number" id="num1" class="input-field">
+
+        <label class="input-label">Select Operation</label>
+        <div class="operator-group">
+            <button class="operator-btn" data-op="+">+</button>
+            <button class="operator-btn" data-op="-">−</button>
+            <button class="operator-btn" data-op="*">×</button>
+            <button class="operator-btn" data-op="/">÷</button>
+            <button class="operator-btn" data-op="%">%</button>
+        </div>
+
+        <label class="input-label">Second Number</label>
+        <input type="number" id="num2" class="input-field">
+
+        <button class="calculate-btn" onclick="calculate()">Calculate</button>
+
+        <div class="result-display" id="resultBox">
+            <div class="result-value" id="resultValue"></div>
+        </div>
+    </div>
+
+    <!-- Floating Theme Switcher -->
+    <div class="theme-switcher" onclick="toggleThemePanel()">
+        <i class="fas fa-palette"></i>
+    </div>
+
+    <!-- Theme Panel -->
+    <div class="theme-panel" id="themePanel">
+        <span class="theme-color" style="background:#667eea" onclick="setTheme('theme-blue')"></span>
+        <span class="theme-color" style="background:#00d26a" onclick="setTheme('theme-green')"></span>
+        <span class="theme-color" style="background:#ff7e5f" onclick="setTheme('theme-orange')"></span>
+        <span class="theme-color" style="background:#ff7eb3" onclick="setTheme('theme-pink')"></span>
+        <span class="theme-color" style="background:#8e2de2" onclick="setTheme('theme-purple')"></span>
+    </div>
+
+    <script>
+        let selectedOperator = null;
+
+        document.querySelectorAll(".operator-btn").forEach(btn => {
+            btn.onclick = function () {
+                document.querySelectorAll(".operator-btn").forEach(b => b.classList.remove("active"));
+                this.classList.add("active");
+                selectedOperator = this.dataset.op;
+            };
+        });
+
+        async function calculate() {
+            const num1 = document.getElementById("num1").value;
+            const num2 = document.getElementById("num2").value;
+
+            if (!num1 || !num2 || !selectedOperator) {
+                alert("Please enter numbers and select an operation.");
+                return;
+            }
+
+            const res = await fetch("/calculate", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ num1, num2, operator: selectedOperator })
+            });
+
+            const data = await res.json();
+            document.getElementById("resultBox").style.display = "block";
+            document.getElementById("resultValue").textContent = data.success ? data.result : data.error;
+        }
+
+        function toggleThemePanel() {
+            const panel = document.getElementById("themePanel");
+            panel.style.display = (panel.style.display === "block") ? "none" : "block";
+        }
+
+        function setTheme(theme) {
+            document.body.className = theme;
+        }
+    </script>
+
+</body>
+</html>
