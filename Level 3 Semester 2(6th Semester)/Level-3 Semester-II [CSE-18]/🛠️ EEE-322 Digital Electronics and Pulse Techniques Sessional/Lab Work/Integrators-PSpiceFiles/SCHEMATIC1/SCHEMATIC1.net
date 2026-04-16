@@ -1,0 +1,6 @@
+* source INTEGRATORS
+R_R1         N00487 N00498  1k TC=0,0 
+R_R2         0 N00553  10k TC=0,0 
+C_C1         N00498 N00553  1nF  TC=0,0 
+V_V1         N00487 0 100Vdc
+E_U1         N00553 0 VALUE {LIMIT(V(0,N00498)*1E6,-15V,+15V)}
