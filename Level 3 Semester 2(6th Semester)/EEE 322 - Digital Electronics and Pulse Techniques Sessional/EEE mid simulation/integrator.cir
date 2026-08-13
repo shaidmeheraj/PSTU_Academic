@@ -1,0 +1,23 @@
+* C:\Users\sharafat\Documents\integrator.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Thu Apr 02 04:15:07 2026
+
+
+
+** Analysis setup **
+.tran 0ns 2.5s
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "integrator.net"
+.INC "integrator.als"
+
+
+.probe
+
+
+.END

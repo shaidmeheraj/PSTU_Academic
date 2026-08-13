@@ -1,0 +1,23 @@
+* C:\Users\sharafat\Documents\clipper_simple.sch
+
+* Schematics Version 9.1 - Web Update 1
+* Thu Apr 02 08:24:52 2026
+
+
+
+** Analysis setup **
+.tran 0ns 0.1
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "clipper_simple.net"
+.INC "clipper_simple.als"
+
+
+.probe
+
+
+.END

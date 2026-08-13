@@ -1,0 +1,26 @@
+Mahbub Sir:
+Chapter 2 : Monte Carlo Method
+Lab Work 01 - 2.1 Area of an Irregular Figure
+Lab Work 02 - 2.2 A Gambling Game
+Lab Work 03 - 2.3 Numerical Integration by Monte Carlo Method
+Lab Work 04 - 2.4 Determination of value of π by Monte Carlo Method
+Lab Work 05 - 2.5 Random Walk Problem
+Lab Work 06 - 2.7 Application of Random Normal Numbers
+
+
+Chapter 3 : Simulation of Continuous Systems
+...
+
+
+
+
+Masud Sir:
+Lab Work 01 - 1.4 Simulation of Single Server Queueing System [Lab 01: A simple M/M/1 queue simulation]
+Lab Work 02 - 1.5 Simulation of Inventory System [Lab 02: simulate an inventory system]
+Lab 03: Write a program to implement Bernouli distribution
+Lab 04: Write a program to implement Binomial distribution
+Lab 05: Poisson Distribution -
+Lab 06: Normal Distribution 
+Lab 07: Exponential Distribution -
+Lab 08: Linear Congruential Generator (LCG)
+Lab 09: Random variates using the inverse transform function

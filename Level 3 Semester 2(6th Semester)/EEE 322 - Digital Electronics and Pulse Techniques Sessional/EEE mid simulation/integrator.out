@@ -1,0 +1,148 @@
+
+**** 04/02/26 04:15:07 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\sharafat\Documents\integrator.sch
+
+
+ ****     CIRCUIT DESCRIPTION
+
+
+******************************************************************************
+
+
+
+
+* Schematics Version 9.1 - Web Update 1
+* Thu Apr 02 04:15:07 2026
+
+
+
+** Analysis setup **
+.tran 0ns 2.5s
+.OP 
+
+
+* From [PSPICE NETLIST] section of pspiceev.ini:
+.lib "nom.lib"
+
+.INC "integrator.net"
+
+**** INCLUDING integrator.net ****
+* Schematics Netlist *
+
+
+
+C_C1         $N_0001 $N_0002  1n  
+V_V1         0 $N_0003  
++SIN 0 10 4 0 0 0
+R_R1         $N_0003 $N_0001  1k  
+E_U1         $N_0002 0 VALUE {LIMIT(V(0,$N_0001)*1E6,-15V,+15V)}
+
+**** RESUMING integrator.cir ****
+.INC "integrator.als"
+
+
+
+**** INCLUDING integrator.als ****
+* Schematics Aliases *
+
+.ALIASES
+C_C1            C1(1=$N_0001 2=$N_0002 )
+V_V1            V1(+=0 -=$N_0003 )
+R_R1            R1(1=$N_0003 2=$N_0001 )
+E_U1            U1(OUT=$N_0002 +=0 -=$N_0001 )
+.ENDALIASES
+
+
+**** RESUMING integrator.cir ****
+.probe
+
+
+.END
+
+**** 04/02/26 04:15:07 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\sharafat\Documents\integrator.sch
+
+
+ ****     SMALL SIGNAL BIAS SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+($N_0001)    0.0000                   ($N_0002)    0.0000                       
+
+($N_0003)    0.0000                   
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_V1         0.000E+00
+
+    TOTAL POWER DISSIPATION   0.00E+00  WATTS
+
+
+**** 04/02/26 04:15:07 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\sharafat\Documents\integrator.sch
+
+
+ ****     OPERATING POINT INFORMATION      TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+
+
+
+**** VOLTAGE-CONTROLLED VOLTAGE SOURCES
+
+
+NAME         E_U1      
+V-SOURCE     0.000E+00
+I-SOURCE     0.000E+00
+**** 04/02/26 04:15:07 *********** Evaluation PSpice (Nov 1999) **************
+
+ * C:\Users\sharafat\Documents\integrator.sch
+
+
+ ****     INITIAL TRANSIENT SOLUTION       TEMPERATURE =   27.000 DEG C
+
+
+******************************************************************************
+
+
+
+ NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE     NODE   VOLTAGE
+
+
+($N_0001)    0.0000                   ($N_0002)    0.0000                       
+
+($N_0003)    0.0000                   
+
+
+
+
+    VOLTAGE SOURCE CURRENTS
+    NAME         CURRENT
+
+    V_V1         0.000E+00
+
+    TOTAL POWER DISSIPATION   0.00E+00  WATTS
+
+
+
+          JOB CONCLUDED
+
+          TOTAL JOB TIME             .02
+
