@@ -1,0 +1,353 @@
+Iteration
+
+# First let's import necessary libs
+import matplotlib.pyplot as plt
+import numpy as np
+import math
+
+def f2(x):
+    return x**3 - 2*x + 2
+
+def g3(x):
+    return (x**3 + 1) / 4
+
+
+def iteration_method(g, x, tol=1e-5, max_iter=100):
+    for i in range(max_iter):
+        x_new = g(x)
+        if abs(x_new - x) < tol:
+            return x_new
+        x = x_new
+    raise ValueError(
+        "Iteration did not converge within the maximum number of iterations."
+    )
+
+
+
+root = iteration_method(g3, 1)
+
+
+# Let's plot the result
+#  x = np.arange(-10, 10, 0.1)
+
+# easy one
+# plt.plot(x,f2(x),label='f(x)=x^3-2x+2')
+# plt.scatter(root,f(root),color='red',label='Root')
+
+# plt.xlabel('x')
+# plt.ylabel('f(x)')
+# plt.title(f'Iteration Method Root: {root:.5f}')
+# plt.grid()
+# plt.legend()
+
+# Let's plot the result
+x = np.arange(-10, 10, 0.1)
+
+plt.plot(x, f2(x), label='f2(x) = x^3 - 2x + 2')
+plt.scatter(root, f2(root), color='blue')  
+
+
+# Mark the root on the plot
+plt.axvline(root, color='purple', linestyle='--', label=f'x = root ({root:.5f})')
+
+plt.axvline(0, color='green', linestyle='--')
+plt.axhline(0, color='red', linestyle='--')
+
+plt.xlabel('x')
+plt.ylabel('f2(x)')
+plt.title(f"Iteration Method Root: {root:.5f}")
+plt.grid()
+plt.legend()   
+
+
+Bisection:
+# First let's import necessary libs
+import matplotlib.pyplot as plt
+import numpy as np
+
+def f(x):
+    return x**3 - 4*x - 9
+
+def bisection_method(f,a,b,tol=1e-5):
+    if f(a) * f(b) >=0:
+        raise ValueError("f(a) and f(b) must have opposite signs.")
+    
+    mid =(a+b)/2.0
+
+    if abs(f(mid))<tol:
+        return mid
+    elif f(a)*f(mid)<0:
+        return bisection_method(f,a,mid,tol)
+    else:
+        return bisection_method(f,mid,b,tol)
+
+root = bisection_method(f,0,10)
+
+x=np.arange(0,3,0.1)
+
+plt.plot(x,f(x),label = 'f(x) = x^3 - 4x - 9')
+plt.scatter(root,f(root),color='blue')
+
+
+
+plt.axvline(root,color='purple',linestyle='--',label=f'x=root ({root:.5f})')
+
+plt.axvline(0, color='green', linestyle='--')
+plt.axhline(0, color='red', linestyle='--')
+
+
+
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title(f"Bisection Method Root: {root:.5f}")
+plt.grid()
+plt.legend()
+
+
+FalsePosition:
+
+import matplotlib.pyplot as plt
+import numpy as np
+
+# Simple function
+def f(x):
+  return x**2 - 2
+
+def false_position_method(f, a, b, tol=1e-5):
+    if f(a) * f(b) >= 0:
+        raise ValueError("f(a) and f(b) must have opposite signs.")
+
+    # c = a - (f(a) * (b - a) / (f(b) - f(a)))
+    c = b - (f(b) * (a - b) / (f(a) - f(b)))  # Recalculate c using b
+
+    if abs(f(c)) < tol:
+        return c
+    elif f(a) * f(c) < 0:
+        return false_position_method(f, a, c, tol)
+    else:
+        return false_position_method(f, c, b, tol)
+
+
+
+root = false_position_method(f, 0, 10)
+
+# Let's plot the result
+x = np.arange(0, 3, 0.1)
+
+plt.plot(x, f(x), label='f(x) = x^2 - 2')
+plt.scatter(root, f(root), color='blue')  # Mark the root on the plot
+plt.axvline(root, color='purple', linestyle='--', label=f'x = root ({root:.5f})')
+
+plt.axvline(0, color='green', linestyle='--')
+plt.axhline(0, color='red', linestyle='--')
+
+plt.xlabel('x')
+plt.ylabel('f(x)')
+plt.title(f"False Position Method Root: {root:.5f}")
+plt.grid()
+plt.legend()
+
+
+Gauss Elimination:
+
+def gauss_elimination(a, b):
+    n = len(b)
+    
+    # Step 1: Augmented matrix বানাই
+    for i in range(n):
+        a[i].append(b[i])
+    
+    # Step 2: Forward Elimination (Upper Triangular Matrix বানানো)
+    for i in range(n):
+        if a[i][i] == 0.0:
+            raise ZeroDivisionError("Mathematical Error! (Pivot = 0)")
+        
+        # i-th row টা select করে নিচ্ছি (pivot row),
+        # এখন i-th column এর নিচের সবগুলো element zero করতে হবে (upper triangular বানানোর জন্য)।
+        for j in range(i+1, n):
+            # j-th row এর প্রথম non-zero element কে pivot row এর সাথে compare করে ratio বের করলাম
+            ratio = a[j][i] / a[i][i]
+            
+            # এখন j-th row এর সবগুলো element কে update করব
+            # pivot row কে ratio দিয়ে গুণ করে minus করব, যেন j-th row এর i-th column 0 হয়ে যায়
+            for k in range(i, n+1):
+                a[j][k] -= ratio * a[i][k]
+    
+    # Step 3: Back Substitution
+    x = [0 for _ in range(n)]
+    
+    for i in range(n-1, -1, -1):
+        x[i] = a[i][n]  # Constant value
+        for j in range(i+1, n):
+            x[i] -= a[i][j] * x[j]
+        x[i] /= a[i][i]
+    
+    return x
+    
+# Example usage
+a = [[2, 1, -1],
+     [-3, -1, 2],
+     [-2, 1, 2]]
+b = [8, -11, -3]
+solution = gauss_elimination(a, b)
+print("Solution:", solution)
+
+Gauss Jordan:
+
+# Gauss-Jordan Elimination in Python
+
+def gauss_jordan(a, b):
+    n = len(b)
+
+    # Make augmented matrix
+    for i in range(n):
+        a[i].append(b[i])
+
+    # Forward elimination + make diagonal 1
+    for i in range(n):
+        # Pivot should not be zero
+        if a[i][i] == 0.0:
+            raise ZeroDivisionError("Divide by zero detected!")
+
+        # Make pivot = 1
+        pivot = a[i][i]
+        for j in range(i, n+1):
+            a[i][j]  /= pivot
+
+        # Make other rows' same column = 0
+        for k in range(n):
+            if k != i:
+                factor = a[k][i]
+                for j in range(i, n+1):
+                    a[k][j] -= factor * a[i][j]
+
+    # Extract solution
+    x = [a[i][n] for i in range(n)]
+    return x
+
+
+# Example usage
+A = [[2, 1, -1],
+     [-3, -1, 2],
+     [-2, 1, 2]]
+
+b = [8, -11, -3]
+
+solution = gauss_jordan(A, b)
+print("Solution:", solution)
+
+
+GD:
+
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from matplotlib import pyplot as plt
+
+# np.random.seed(0): random number generator-er seed set kore, jate protibar same random value pai (reproducibility).
+np.random.seed(0)
+
+# x = 2 * np.random.rand(100, 1): 0 theke 2 er moddhe 100 ta random x value generate kore (column vector).
+x = 2 * np.random.rand(100, 1)
+
+# y = 4 + 3 * x + np.random.randn(100, 1): y value create kore, jeikhane y = 4 + 3x + noise (noise holo normally distributed random value, real-life data-r moto).
+y = 4 + 3 * x + np.random.randn(100, 1)
+
+def gradient_descent(x, y, m = 0, b = 0, learning_rate = 0.01, epochs = 10000):
+    n = len(y)
+    for _ in range(epochs):
+        y_pred = m * x + b
+        dm = (-2/n) * sum(x * (y - y_pred))
+        db = (-2/n) * sum(y - y_pred)
+        m -= learning_rate * dm
+        b -= learning_rate * db
+    return m, b
+
+plt.scatter(x, y)
+
+m, b = gradient_descent(x, y)
+plt.plot(x, m*x + b, color='red')
+
+plt.xlabel('X')
+plt.ylabel('Y')
+
+plt.title('Gradient Descent')
+plt.show()
+
+SGD:
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# np.random.seed(0): random number generator-er seed set kore, jate protibar same random value pai (reproducibility).
+np.random.seed(0)
+
+# x = 2 * np.random.rand(100, 1): 0 theke 2 er moddhe 100 ta random x value generate kore (column vector).
+x = 2 * np.random.rand(100, 1)
+
+# y = 4 + 3 * x + np.random.randn(100, 1): y value create kore, jeikhane y = 4 + 3x + noise (noise holo normally distributed random value, real-life data-r moto).
+y = 4 + 3 * x + np.random.randn(100, 1)
+
+def stochastic_gradient_descent(x, y, m=0, b=0, learning_rate=0.01, epochs=10000):
+    n = len(y)
+    for _ in range(epochs):
+        for i in range(n):
+            xi = x[i:i+1]
+            yi = y[i:i+1]
+            y_pred = m * xi + b
+            dm = -2 * xi * (yi - y_pred)
+            db = -2 * (yi - y_pred)
+            m -= learning_rate * dm
+            b -= learning_rate * db
+    return m, b
+
+m, b = stochastic_gradient_descent(x, y)
+print(f"Slope (m): {m}, Intercept (b): {b}")
+
+plt.scatter(x, y,label='Data points')
+plt.plot(x, m*x + b, color='red',label='Fitted line')
+
+plt.xlabel('X')
+plt.ylabel('Y')
+
+plt.title('Stochastic Gradient Descent')
+plt.legend()
+plt.show()
+
+
+Linear:
+
+import numpy as np
+from sklearn.linear_model import LinearRegression
+from matplotlib import pyplot as plt
+
+# np.random.seed(0): random number generator-er seed set kore, jate protibar same random value pai (reproducibility).
+np.random.seed(0)
+
+# x = 2 * np.random.rand(100, 1): 0 theke 2 er moddhe 100 ta random x value generate kore (column vector).
+x = 2 * np.random.rand(100, 1)
+
+# y = 4 + 3 * x + np.random.randn(100, 1): y value create kore, jeikhane y = 4 + 3x + noise (noise holo normally distributed random value, real-life data-r moto).
+y = 4 + 3 * x + np.random.randn(100, 1)
+
+model = LinearRegression()
+model.fit(x, y)
+
+x_new = np.array([[0], [2]])
+y_predict = model.predict(x_new)
+
+print("Intercept:", model.intercept_)
+print("Coefficient:", model.coef_)
+
+plt.scatter(x, y)
+plt.plot(x_new, y_predict, color='red')
+
+plt.xlabel('X')
+plt.ylabel('Y')
+
+plt.title('Linear Regression')
+plt.show()
+
+
+Logistic:
+
+
